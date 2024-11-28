@@ -30,53 +30,92 @@ Be sure to divide the program into functions that perform each major task.
 
 #include <iostream>
 #include <random>
+#include <string>
 using namespace std;
 
-string GetComputerChoice();
+// Function prototypes
+int GetComputerChoice();
 int ChoiceInput();
-void ShowComputerChoice(string);
+void ShowComputerChoice(int);
+void DetermineWinner(int, int, string&);
 
 int main() {
-	cout << "Rock, Paper, Scissors\n\n";
-	
-	int playerChoice = ChoiceInput(); //player choice
+    string playAgain = "true"; 
+    cout << "Rock, Paper, Scissors\n\n";
 
-	string computerChoice = GetComputerChoice(); //computer choice
+    while (playAgain == "true") { 
+        int computerChoice = GetComputerChoice(); // Computer's choice
+        int playerChoice = ChoiceInput();        // Player's choice
+        ShowComputerChoice(computerChoice);      // Display computer's choice
+        DetermineWinner(computerChoice, playerChoice, playAgain); // Determine result
+    }
 
-	showComputerChoice(computerChoice); //show computer choice
+    return 0;
 }
-string GetComputerChoice() {
-	random_device numberEngine;
-	uniform_int_distribution<int> randomInt(1, 3);
-	int randNumber = randomInt(numberEngine);
-
-	if (randNumber == 1)
-	{
-		return "Rock";
-	}
-	else if (randNumber == 2)
-	{
-		return "Paper";
-	}
-	else if (randNumber == 3)
-	{
-		return "Scissors";
-	}
+int GetComputerChoice() {
+    random_device numberEngine;
+    uniform_int_distribution<int> randomInt(1, 3);
+    return randomInt(numberEngine);
 }
 int ChoiceInput() {
-	int choice;
-	
-	cout << "\n1. Rock\n";
-	cout << "2. Paper\n";
-	cout << "3. Scissors\n\n";
-	
-	do {
-		cout << "Enter your choice (1-3):";
-		cin >> choice;
-	} while (choice < 1 || choice > 3);
+    int choice;
 
-	return choice;
+    cout << "\n1. Rock\n";
+    cout << "2. Paper\n";
+    cout << "3. Scissors\n\n";
+
+    do {
+        cout << "Enter your choice (1-3): ";
+        cin >> choice;
+    } while (choice < 1 || choice > 3);
+
+    return choice;
 }
-void ShowComputerChoice(string computerChoice) {
-	cout << "The computer chose " << computerChoice << ".";
+void ShowComputerChoice(int computerChoice) {
+    if (computerChoice == 1)
+        cout << "\nComputer chose Rock!";
+    else if (computerChoice == 2)
+        cout << "\nComputer chose Paper!";
+    else if (computerChoice == 3)
+        cout << "\nComputer chose Scissors!";
+}
+void DetermineWinner(int computerChoice, int playerChoice, string& playAgain) {
+    cout << endl;
+    if (playerChoice == computerChoice) {
+        cout << "It's a tie! Play again.\n";
+        return; 
+    }
+
+    if (playerChoice == 1) { // Player chose Rock
+        if (computerChoice == 2)
+            cout << "Paper wraps Rock. You lost.\n";
+        else if (computerChoice == 3)
+            cout << "Rock smashes Scissors. You won!\n";
+    }
+    else if (playerChoice == 2) { // Player chose Paper
+        if (computerChoice == 1)
+            cout << "Paper wraps Rock. You won!\n";
+        else if (computerChoice == 3)
+            cout << "Scissors cuts Paper. You lost.\n";
+    }
+    else if (playerChoice == 3) { // Player chose Scissors
+        if (computerChoice == 1)
+            cout << "Rock smashes Scissors. You lost.\n";
+        else if (computerChoice == 2)
+            cout << "Scissors cuts Paper. You won!\n";
+    }
+
+    // Ask if the player wants to play again
+    char choice;
+    do {
+        cout << "\nDo you want to play again? (Y/N): ";
+        cin >> choice;
+     
+        if (choice == 'Y')
+            playAgain = "true";
+        else if (choice == 'N')
+            playAgain = "false";
+        else
+            cout << "Invalid input. Please enter Y or N.\n";
+    } while (choice != 'Y' && choice != 'N');
 }
